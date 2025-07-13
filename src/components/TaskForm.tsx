@@ -1,28 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useTaskStore from '../store/taskStore';
-import Task from '../task'; 
+import Task from '../task';
+import TitleInput from './TitleInput';
+import DueDateInput from './DueDateInput';
+import PrioritySelect from './PrioritySelect';
+import CategorySelect from './CategorySelect';
+import DescriptionTextarea from './DescriptionTextarea';
+import FormButtons from './FormButtons';
 
 function TaskForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const {
-    tasks,
     addTask,
     updateTask,
     selectedTask,
+    selectTaskForEdit,
     clearSelectedTask,
   } = useTaskStore();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
- const [priority, setPriority] = useState<'Low' | 'Medium' | 'High'>('Low');
+  const [priority, setPriority] = useState<'Low' | 'Medium' | 'High'>('Low');
   const [category, setCategory] = useState('work');
 
-  // Load task if editing
   useEffect(() => {
-    if (id !== undefined && selectedTask) {
+    if (id !== undefined) {
+      selectTaskForEdit(Number(id));
+    } else {
+      clearSelectedTask();
+    }
+  }, [id, selectTaskForEdit, clearSelectedTask]);
+
+  useEffect(() => {
+    if (selectedTask) {
       setTitle(selectedTask.title || '');
       setDescription(selectedTask.description || '');
       setDueDate(
@@ -33,9 +46,9 @@ function TaskForm() {
       setPriority(selectedTask.priority || 'Low');
       setCategory(selectedTask.category || 'work');
     }
-  }, [id, selectedTask]);
+  }, [selectedTask]);
 
-   const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newTask = new Task(
       title.trim(),
@@ -44,17 +57,21 @@ function TaskForm() {
       priority,
       category.trim()
     );
-
     if (id !== undefined) {
-      updateTask(Number(id), newTask);
+      updateTask(Number(id), {
+        ...newTask,
+        dueDate: newTask.dueDate ? newTask.dueDate.toISOString() : null,
+      });
     } else {
-      addTask(newTask);
+      addTask({
+        ...newTask,
+        dueDate: newTask.dueDate ? newTask.dueDate.toISOString() : null,
+      });
     }
 
     clearSelectedTask();
     navigate('/');
   };
-
 
   return (
     <div className="bg-white shadow-xl rounded-3xl p-6 border border-pink-200 mb-8">
@@ -63,84 +80,12 @@ function TaskForm() {
       </h2>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {/* Title */}
-        <div>
-          <label className="block mb-1 font-medium">Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-pink-200 rounded-xl px-3 py-2 bg-pink-50 focus:ring-2 focus:ring-pink-300"
-            required
-          />
-        </div>
-
-        {/* Due Date */}
-        <div>
-          <label className="block mb-1 font-medium">Due Date</label>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="w-full border border-pink-200 rounded-xl px-3 py-2 bg-pink-50 focus:ring-2 focus:ring-pink-300"
-          />
-        </div>
-
-        {/* Priority */}
-        <div>
-          <label className="block mb-1 font-medium">Priority</label>
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value as 'Low' | 'Medium' | 'High')}
-            className="w-full border border-pink-200 rounded-xl px-3 py-2 bg-pink-50"
-          >
-            <option value="Low">🌸 Low</option>
-            <option value="Medium">🌷 Medium</option>
-            <option value="High">💥 High</option>
-          </select>
-        </div>
-
-        {/* Category */}
-        <div>
-          <label className="block mb-1 font-medium">Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full border border-pink-200 rounded-xl px-3 py-2 bg-pink-50"
-          >
-            <option value="work">🧠 Work</option>
-            <option value="personal">💅 Personal</option>
-            <option value="other">🎀 Other</option>
-          </select>
-        </div>
-
-        {/* Description */}
-        <div className="sm:col-span-2">
-          <label className="block mb-1 font-medium">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border border-pink-200 rounded-xl px-3 py-2 bg-pink-50"
-            rows={3}
-          />
-        </div>
-
-        {/* Buttons */}
-        <div className="sm:col-span-2 flex items-center justify-center gap-4">
-          <button
-            type="submit"
-            className="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 shadow-md transition"
-          >
-            {id !== undefined ? '💾 Save Task' : '➕ Add Task'}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="text-pink-600 hover:underline"
-          >
-            ❌ Cancel
-          </button>
-        </div>
+        <TitleInput value={title} onChange={setTitle} />
+        <DueDateInput value={dueDate} onChange={setDueDate} />
+        <PrioritySelect value={priority} onChange={setPriority} />
+        <CategorySelect value={category} onChange={setCategory} />
+        <DescriptionTextarea value={description} onChange={setDescription} />
+        <FormButtons isEdit={id !== undefined} onCancel={() => navigate('/')} />
       </form>
     </div>
   );

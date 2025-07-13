@@ -17,6 +17,8 @@ function Home() {
 
   return (
     <>
+    
+
       <div className="flex justify-between mb-6">
         <Link
           to="/addTask"
@@ -24,11 +26,13 @@ function Home() {
         >
           ➕ Add New Task
         </Link>
+        <img src="/hk.png" alt="Logo" className="h-12 w-auto" />  
+        
       </div>
 
       <div className="bg-white shadow-md rounded-2xl p-4 border border-pink-200 mb-8">
-        <SearchBar />       {/* ✅ No props */}
-        <FilterControls />  {/* ✅ No props */}
+        <SearchBar />     
+        <FilterControls /> 
       </div>
 
       <TaskList
@@ -36,7 +40,7 @@ function Home() {
         searchQuery={searchQuery}
         statusFilter={statusFilter}
         editTask={(task) => {
-          selectTaskForEdit(task.id); // ✅ use correct method
+          selectTaskForEdit(task.id);
           navigate(`/editTask/${task.id}`);
         }}
         deleteTask={() => {}}
