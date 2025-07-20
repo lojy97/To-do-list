@@ -6,8 +6,10 @@ import NotFound from './Pages/NotFound';
 import Navbar from './components/Navbar';
 import LoginPage from './Pages/login';
 import ProtectedRoute from './components/protectedRoutes';
-
+import './i18n';
+import { useTranslation } from 'react-i18next';
 function App() {
+  const { t, i18n } = useTranslation();
   return (
     <Router>
        <Navbar />
@@ -16,7 +18,7 @@ function App() {
         <div className="max-w-5xl mx-auto py-12 px-6 text-pink-900">
           
           <h1 className="text-4xl font-extrabold text-center text-pink-600 mb-8">
-            🎀 To-Do List
+            🎀 {t('title')}
           </h1>
 
           <Routes>

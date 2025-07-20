@@ -4,7 +4,7 @@ import useTaskStore from '../store/taskStore';
 import SearchBar from '../components/SearchBar';
 import FilterControls from '../components/FilterControls';
 import TaskList from '../components/TaskList';
-
+import { useTranslation } from 'react-i18next';
 function Home() {
   const {
     tasks,
@@ -14,7 +14,7 @@ function Home() {
   } = useTaskStore();
 
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   return (
     <>
     
@@ -24,7 +24,7 @@ function Home() {
           to="/addTask"
           className="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 shadow-md transition"
         >
-          ➕ Add New Task
+          ➕ {t('add_new_task')}
         </Link>
         <img src="/hk.png" alt="Logo" className="h-12 w-auto" />  
         

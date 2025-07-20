@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import useTaskStore from '../store/taskStore';
-
+import { useTranslation } from 'react-i18next';
 function TaskItem({ task, index }) {
+  const { t } = useTranslation();
   const { toggleTaskStatus, deleteTask, selectTaskForEdit } = useTaskStore();
   return (
     <div className="bg-white shadow rounded-2xl p-4 border border-pink-100">

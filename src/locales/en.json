@@ -1,0 +1,15 @@
+{  "title": "To-Do List",
+  "home": "Home",
+  "add_task": "Add Task",
+  "add_new_task": "Add New Task",
+  "login": "Login",
+  "logout": "Logout",
+  "welcome": "Welcome to the Task Manager!",
+  "task": "Task",
+  "search": "Search by title"
+, "all": "All",
+  "complete": "Complete", 
+  "incomplete": "Incomplete"
+, "edit": "Edit",
+  "delete": "Delete"
+}
